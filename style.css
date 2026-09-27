@@ -149,7 +149,7 @@ button.jackpot {
 }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
 .awaken .ability { font-weight: 800; color: #a9c3ff; letter-spacing: .08em; }
-.awaken .tier { font-size: .75rem; border: 1px solid #a9c3ff; border-radius: 99px; padding: 1px 8px; margin-left: 6px; vertical-align: middle; }
+.tier { font-size: .75rem; border: 1px solid #a9c3ff; border-radius: 99px; padding: 1px 8px; margin-left: 6px; vertical-align: middle; }
 
 .code { background: #0b0f0c; border: 1px solid #1f3326; border-radius: 10px; padding: 8px 0; margin: 10px 0; overflow-x: auto; }
 .code .line {
@@ -162,6 +162,60 @@ button.jackpot {
 .code .line.strikeable:hover { background: rgba(159, 227, 176, .08); }
 .code .line.core { color: #ffe08a; text-shadow: 0 0 6px rgba(255, 224, 138, .5); }
 .code .line.struck { text-decoration: line-through; color: #5f7a67; cursor: default; }
+
+/* ---------- chapter 2: the haystack-stack ---------- */
+.fill.drain { background: linear-gradient(90deg, #7a4bd6, var(--gold)); }
+.box-panel {
+  background: var(--panel);
+  border: 1px solid #4a3b2a;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 10px 0 16px;
+}
+.drain-note { margin: 0; font: .75rem/1.4 ui-monospace, Menlo, Consolas, monospace; color: var(--gold); animation: blink 1.2s steps(2) infinite; }
+.items { margin: 8px 0; padding-left: 20px; font-size: .9rem; }
+.items li.gone { text-decoration: line-through; color: var(--muted); opacity: .6; }
+.fob { font-size: .85rem; margin: 6px 0; }
+.fob .dead { color: #f08a8a; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.keypad, .search { display: flex; gap: 8px; margin: 8px 0; }
+.keypad input, .search input {
+  flex: 1; min-width: 0;
+  font: 1rem ui-monospace, Menlo, Consolas, monospace;
+  color: var(--text); background: #0b0806;
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+}
+.keypad input { letter-spacing: .12em; }
+.explorer { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+.drives { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.drive { padding: 8px 12px; white-space: nowrap; font-size: .85rem; }
+.drive.on { border-color: var(--pp); background: #1c2540; }
+.crumbs { font-size: .85rem; color: var(--muted); margin: 6px 0; overflow-wrap: anywhere; }
+.crumb { background: none; border: 0; padding: 2px 0; color: #a9c3ff; text-decoration: underline; }
+.files { list-style: none; margin: 0; padding: 0; max-height: 340px; overflow-y: auto; }
+.files li.empty { color: var(--muted); font-style: italic; padding: 8px 4px; }
+.entry {
+  display: block; width: 100%; text-align: left;
+  background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+  padding: 9px 4px; overflow-wrap: anywhere;
+}
+.entry:hover { background: var(--panel-2); }
+.entry small, .plan small { display: block; color: var(--muted); font-size: .75rem; }
+.preview {
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  background: #0b0806; border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; margin: 10px 0 0;
+  font: .85rem/1.5 ui-monospace, Menlo, Consolas, monospace;
+}
+.sorter { background: var(--panel); border: 1px dashed #a9c3ff; border-radius: 12px; padding: 12px 14px; margin: 12px 0; }
+.sorter.done { border-style: solid; }
+.group { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0 2px; cursor: pointer; }
+.group input { margin-top: 5px; width: 18px; height: 18px; }
+.sorter details { margin: 0 0 6px 28px; font-size: .85rem; }
+.sorter summary { color: #a9c3ff; cursor: pointer; }
+.plan { max-height: 220px; overflow-y: auto; padding-left: 18px; }
+.plan li { margin: 4px 0; }
+.tag { font-size: .7rem; color: var(--gold); border: 1px solid var(--gold); border-radius: 99px; padding: 0 6px; margin-left: 4px; }
+.tag.dim { color: var(--muted); border-color: var(--line); }
 
 /* ---------- log ---------- */
 #log-wrap { margin-top: 28px; border-top: 1px solid var(--line); }
