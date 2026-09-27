@@ -18,7 +18,21 @@ const state = {
   saved: [],
   wheelRot: 0,
   boss: null,
+  // prophecy blanks that later chapters fill in
+  place: null,
+  people: [],
+  abilities: ['Psychic Push', 'Read between the Reels (Novice)'],
+  tactics: ['reading between the reels'],
+  onLeave: null, // cleanup (timers) for the current scene
 };
+
+const SAVE_KEY = 'playing-solo.chapter';
+function savedChapter() {
+  try { return Number(localStorage.getItem(SAVE_KEY)) || 1; } catch { return 1; }
+}
+function saveChapter(n) {
+  try { if (n > savedChapter()) localStorage.setItem(SAVE_KEY, String(n)); } catch { /* storage blocked */ }
+}
 
 /* ---------- helpers ---------- */
 
@@ -55,33 +69,42 @@ function log(msg, cls = '') {
 }
 
 function show(html) {
+  if (state.onLeave) {
+    state.onLeave();
+    state.onLeave = null;
+  }
   $('#stage').innerHTML = html;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function storyScene({ kicker, title, body, extra = '', button, next }) {
+function storyScene({ kicker, title, body, extra = '', button, next, alt }) {
   show(`
     <article class="story">
       ${kicker ? `<p class="kicker">${kicker}</p>` : ''}
       <h2>${title}</h2>
       ${body.map((p) => `<p>${p}</p>`).join('')}
       ${extra}
-      <div class="actions"><button class="primary" id="next">${button}</button></div>
+      <div class="actions">
+        <button class="primary" id="next">${button}</button>
+        ${alt ? `<button id="alt">${alt.label}</button>` : ''}
+      </div>
     </article>`);
   $('#next').onclick = next;
+  if (alt) $('#alt').onclick = alt.next;
 }
 
 /* ---------- the prophecy (a fever dream with a lot of blanks) ---------- */
 
 function prophecy(revealed) {
-  const people = state.saved.length ? state.saved.join(', ') : null;
+  const everyone = [...state.saved, ...state.people];
+  const people = everyone.length ? everyone.join(', ') : null;
   const rows = [
     ['some purpose', revealed && 'to stop the town from burning'],
     ['to do some thing', revealed && 'break the House'],
-    ['in some place', null],
+    ['in some place', revealed && state.place],
     ['with some people', revealed && people],
-    ['using some tactic', revealed && 'reading between the reels'],
-    ['equipped with some psychic abilities', revealed && 'Psychic Push · Read between the Reels (Novice)'],
+    ['using some tactic', revealed && state.tactics.join(', ')],
+    ['equipped with some psychic abilities', revealed && state.abilities.join(' · ')],
   ];
   return `<ul class="prophecy">${rows
     .map(([blank, answer]) => {
@@ -96,8 +119,17 @@ function prophecy(revealed) {
    INTRO
    ========================================================================= */
 
+function resetRun() {
+  Object.assign(state, {
+    hp: MAX_HP, pp: START_PP, stage: 0, saved: [], boss: null, place: null, people: [],
+    abilities: ['Psychic Push', 'Read between the Reels (Novice)'],
+    tactics: ['reading between the reels'],
+  });
+}
+
 function intro() {
-  Object.assign(state, { hp: MAX_HP, pp: START_PP, stage: 0, saved: [], boss: null });
+  resetRun();
+  $('#chapter').textContent = 'Chapter 1: Kindling';
   $('#log').innerHTML = '';
   hud();
   storyScene({
@@ -113,6 +145,7 @@ function intro() {
       `<p>You wake up soaked, with ${START_PP} PP humming behind your eyes and a strong feeling that you should go into town.</p>`,
     button: 'Go into town',
     next: () => startStage(0),
+    alt: savedChapter() >= 2 ? { label: 'Skip to Chapter 2', next: () => ch2Intro(true) } : null,
   });
 }
 
@@ -654,9 +687,10 @@ async function coreStrike() {
       '<p>One line from the machine is still printing somewhere behind your eyes:</p>' +
       '<div class="code"><span class="line inert">house.decide() :: forwarding to node 2 of 7</span></div>' +
       '<p class="kicker">End of Chapter 1</p>',
-    button: 'Play again',
-    next: intro,
+    button: 'Continue to Chapter 2',
+    next: () => ch2Intro(false),
   });
+  saveChapter(2);
 }
 
 function escapeHtml(s) {
